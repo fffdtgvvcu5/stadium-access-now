@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      matches: {
+        Row: {
+          away_logo: string | null
+          away_team: string
+          city: string
+          competition: string
+          cover_color: string | null
+          created_at: string
+          home_logo: string | null
+          home_team: string
+          id: string
+          kickoff_at: string
+          venue: string
+        }
+        Insert: {
+          away_logo?: string | null
+          away_team: string
+          city: string
+          competition: string
+          cover_color?: string | null
+          created_at?: string
+          home_logo?: string | null
+          home_team: string
+          id?: string
+          kickoff_at: string
+          venue: string
+        }
+        Update: {
+          away_logo?: string | null
+          away_team?: string
+          city?: string
+          competition?: string
+          cover_color?: string | null
+          created_at?: string
+          home_logo?: string | null
+          home_team?: string
+          id?: string
+          kickoff_at?: string
+          venue?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          rating: number
+          verified: boolean
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          rating?: number
+          verified?: boolean
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          rating?: number
+          verified?: boolean
+        }
+        Relationships: []
+      }
+      ticket_listings: {
+        Row: {
+          created_at: string
+          currency: string
+          id: string
+          match_id: string
+          notes: string | null
+          price: number
+          quantity: number
+          row_label: string | null
+          seat_label: string | null
+          section: string
+          seller_id: string
+          status: Database["public"]["Enums"]["listing_status"]
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          id?: string
+          match_id: string
+          notes?: string | null
+          price: number
+          quantity?: number
+          row_label?: string | null
+          seat_label?: string | null
+          section: string
+          seller_id: string
+          status?: Database["public"]["Enums"]["listing_status"]
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          id?: string
+          match_id?: string
+          notes?: string | null
+          price?: number
+          quantity?: number
+          row_label?: string | null
+          seat_label?: string | null
+          section?: string
+          seller_id?: string
+          status?: Database["public"]["Enums"]["listing_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_listings_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +144,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      listing_status: "available" | "reserved" | "sold" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +271,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      listing_status: ["available", "reserved", "sold", "cancelled"],
+    },
   },
 } as const
