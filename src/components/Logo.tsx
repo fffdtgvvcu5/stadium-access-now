@@ -1,6 +1,6 @@
 import logo from "@/assets/logo-stadium.png";
 
-export function Logo({ size = 80 }: { size?: number }) {
+export function Logo({ size = 120 }: { size?: number }) {
   return (
     <div className="flex items-center gap-3">
       <img src={logo} alt="المدرج" width={size} height={size} className="drop-shadow-[0_0_14px_rgba(255,255,255,0.18)]" />
