@@ -115,6 +115,20 @@ function SellPage() {
           </Field>
         </div>
 
+        <Field label="صورة التذكرة">
+          <label className="flex flex-col items-center justify-center gap-2 bg-card border border-dashed border-border rounded-xl px-4 py-6 cursor-pointer hover:border-silver/60 transition">
+            {imagePreview ? (
+              <img src={imagePreview} alt="معاينة التذكرة" className="max-h-48 rounded-lg" />
+            ) : (
+              <>
+                <span className="text-2xl">📷</span>
+                <span className="text-xs text-muted-foreground">اضغط لإرفاق صورة التذكرة</span>
+              </>
+            )}
+            <input type="file" accept="image/*" onChange={onPickImage} className="hidden" />
+          </label>
+        </Field>
+
         <Field label="ملاحظات (اختياري)">
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
             rows={3} placeholder="مثل: المقاعد متجاورة"
