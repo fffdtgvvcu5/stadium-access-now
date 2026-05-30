@@ -88,6 +88,7 @@ export type Database = {
           created_at: string
           currency: string
           id: string
+          image_url: string | null
           match_id: string
           notes: string | null
           price: number
@@ -102,6 +103,7 @@ export type Database = {
           created_at?: string
           currency?: string
           id?: string
+          image_url?: string | null
           match_id: string
           notes?: string | null
           price: number
@@ -116,6 +118,7 @@ export type Database = {
           created_at?: string
           currency?: string
           id?: string
+          image_url?: string | null
           match_id?: string
           notes?: string | null
           price?: number
