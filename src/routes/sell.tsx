@@ -50,6 +50,12 @@ function SellPage() {
     );
   }
 
+  const onPickImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] ?? null;
+    setImageFile(f);
+    setImagePreview(f ? URL.createObjectURL(f) : null);
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!matchId || !section || !price) {
@@ -57,9 +63,18 @@ function SellPage() {
       return;
     }
     setSubmitting(true);
+    let image_url: string | null = null;
+    if (imageFile) {
+      const ext = imageFile.name.split(".").pop() || "jpg";
+      const path = `${userId}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("ticket-images").upload(path, imageFile, { upsert: false });
+      if (upErr) { setSubmitting(false); toast.error(upErr.message); return; }
+      image_url = supabase.storage.from("ticket-images").getPublicUrl(path).data.publicUrl;
+    }
     const { error } = await supabase.from("ticket_listings").insert({
       match_id: matchId, seller_id: userId, section, row_label: row || null,
       seat_label: seat || null, price: Number(price), quantity, notes: notes || null,
+      image_url,
     });
     setSubmitting(false);
     if (error) { toast.error(error.message); return; }
