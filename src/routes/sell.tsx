@@ -20,6 +20,8 @@ function SellPage() {
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -48,6 +50,12 @@ function SellPage() {
     );
   }
 
+  const onPickImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] ?? null;
+    setImageFile(f);
+    setImagePreview(f ? URL.createObjectURL(f) : null);
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!matchId || !section || !price) {
@@ -55,9 +63,18 @@ function SellPage() {
       return;
     }
     setSubmitting(true);
+    let image_url: string | null = null;
+    if (imageFile) {
+      const ext = imageFile.name.split(".").pop() || "jpg";
+      const path = `${userId}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("ticket-images").upload(path, imageFile, { upsert: false });
+      if (upErr) { setSubmitting(false); toast.error(upErr.message); return; }
+      image_url = supabase.storage.from("ticket-images").getPublicUrl(path).data.publicUrl;
+    }
     const { error } = await supabase.from("ticket_listings").insert({
       match_id: matchId, seller_id: userId, section, row_label: row || null,
       seat_label: seat || null, price: Number(price), quantity, notes: notes || null,
+      image_url,
     });
     setSubmitting(false);
     if (error) { toast.error(error.message); return; }
@@ -84,7 +101,7 @@ function SellPage() {
         </Field>
 
         <div className="grid grid-cols-3 gap-3">
-          <Field label="القطاع *"><Input value={section} onChange={setSection} placeholder="A12" required /></Field>
+          <Field label="المربع *"><Input value={section} onChange={setSection} placeholder="A12" required /></Field>
           <Field label="الصف"><Input value={row} onChange={setRow} placeholder="5" /></Field>
           <Field label="المقعد"><Input value={seat} onChange={setSeat} placeholder="22" /></Field>
         </div>
@@ -97,6 +114,20 @@ function SellPage() {
             <Input value={String(quantity)} onChange={(v) => setQuantity(Math.max(1, Number(v) || 1))} type="number" />
           </Field>
         </div>
+
+        <Field label="صورة التذكرة">
+          <label className="flex flex-col items-center justify-center gap-2 bg-card border border-dashed border-border rounded-xl px-4 py-6 cursor-pointer hover:border-silver/60 transition">
+            {imagePreview ? (
+              <img src={imagePreview} alt="معاينة التذكرة" className="max-h-48 rounded-lg" />
+            ) : (
+              <>
+                <span className="text-2xl">📷</span>
+                <span className="text-xs text-muted-foreground">اضغط لإرفاق صورة التذكرة</span>
+              </>
+            )}
+            <input type="file" accept="image/*" onChange={onPickImage} className="hidden" />
+          </label>
+        </Field>
 
         <Field label="ملاحظات (اختياري)">
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
