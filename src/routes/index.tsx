@@ -12,6 +12,7 @@ export const Route = createFileRoute("/")({
 
 type Match = {
   id: string; home_team: string; away_team: string;
+  home_logo: string | null; away_logo: string | null;
   competition: string; venue: string; city: string;
   kickoff_at: string; cover_color: string | null;
 };
