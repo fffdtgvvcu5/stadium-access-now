@@ -91,9 +91,9 @@ function FeaturedMatchCard({ match }: { match: Match }) {
         <ChevronLeft className="size-5 text-muted-foreground group-hover:text-foreground transition-colors" />
       </div>
       <div className="flex items-center justify-around text-center my-6">
-        <TeamBadge name={match.home_team} />
+        <TeamBadge name={match.home_team} logo={match.home_logo} />
         <div className="text-2xl font-black text-silver">VS</div>
-        <TeamBadge name={match.away_team} />
+        <TeamBadge name={match.away_team} logo={match.away_logo} />
       </div>
       <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border/50 pt-3">
         <span className="flex items-center gap-1"><MapPin className="size-3" />{match.venue} • {match.city}</span>
@@ -107,6 +107,10 @@ function MatchCard({ match }: { match: Match }) {
   return (
     <Link to="/match/$id" params={{ id: match.id }} className="block glass rounded-2xl p-4 hover:shadow-glow transition-shadow">
       <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <MiniLogo name={match.home_team} logo={match.home_logo} />
+          <MiniLogo name={match.away_team} logo={match.away_logo} />
+        </div>
         <div className="flex-1">
           <div className="flex items-center gap-2 text-sm font-bold">
             <span>{match.home_team}</span>
@@ -124,12 +128,27 @@ function MatchCard({ match }: { match: Match }) {
   );
 }
 
-function TeamBadge({ name }: { name: string }) {
+function MiniLogo({ name, logo }: { name: string; logo: string | null }) {
+  if (logo) {
+    return <img src={logo} alt={name} className="size-8 rounded-full object-contain bg-white/5 p-0.5 ring-1 ring-border/50" loading="lazy" />;
+  }
+  return (
+    <div className="size-8 rounded-full bg-silver flex items-center justify-center text-primary-foreground font-black text-[10px]">
+      {name.slice(0, 2)}
+    </div>
+  );
+}
+
+function TeamBadge({ name, logo }: { name: string; logo?: string | null }) {
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="size-16 rounded-full bg-silver shadow-glow flex items-center justify-center text-primary-foreground font-black text-xl">
-        {name.slice(0, 2)}
-      </div>
+      {logo ? (
+        <img src={logo} alt={name} className="size-16 rounded-full object-contain bg-white/5 p-1.5 ring-1 ring-border/60 shadow-glow" loading="lazy" />
+      ) : (
+        <div className="size-16 rounded-full bg-silver shadow-glow flex items-center justify-center text-primary-foreground font-black text-xl">
+          {name.slice(0, 2)}
+        </div>
+      )}
       <span className="text-sm font-bold">{name}</span>
     </div>
   );
