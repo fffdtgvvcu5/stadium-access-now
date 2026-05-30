@@ -101,7 +101,7 @@ function SellPage() {
         </Field>
 
         <div className="grid grid-cols-3 gap-3">
-          <Field label="القطاع *"><Input value={section} onChange={setSection} placeholder="A12" required /></Field>
+          <Field label="المربع *"><Input value={section} onChange={setSection} placeholder="A12" required /></Field>
           <Field label="الصف"><Input value={row} onChange={setRow} placeholder="5" /></Field>
           <Field label="المقعد"><Input value={seat} onChange={setSeat} placeholder="22" /></Field>
         </div>
